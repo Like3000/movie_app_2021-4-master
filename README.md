@@ -2,6 +2,87 @@
 
 # 강태훈 201840104
 
+## [11월 24일]
+
+#### create-react-app으로 [ Remarkable ] 사용하기
+
+    1.npm create-react-app으로 markdown-editor 프로젝트를 생성함
+    2.프로젝트가 정상 동작하는지 확인함
+    3.App.js에 있는 필요없는 코드를 삭제한 후 문서의 코드를 복사해 넣음
+    4.component의 이름을 App으로 수정함
+    5.rendering은 index.js에 위임함
+    6.App.js에서 React와 Remarkable을 import함
+    7.프로젝트가 동작이 되는지 확인함
+
+#### React 배우기
+
+    1. React는 처음부터 점진적으로 적용할 수 있도록 서례되었으며 필요한 만큼 React를 사용할 수 있음
+    2. 온라인 코드 편집기를 사용하여 간편하게 리액트를 경험할 수 있음
+    3. CodeSandbox는 create-react-app으로 생성된 프로젝트와 동일한 환경에서 테스트가 가능함
+    4. CDN방식으로 간편하게 테스트를 할 수 있도록 HTML코드를 제공하고 있음
+    5. React 문서가 어렵게 느껴진다면, Tania Rascia가 쓴 React개요를 먼저 학습하는 것이 도움이 됨
+    6. 개발을 통해 React를 학습하고 싶다면 React홈페이지에 자습서를 통해 공부함
+
+#### React 홈페이지
+
+    1. 주요개념
+    -개념을 단계별로 배우려면 주요개념 부터 시작하는 것을 추천
+    2. 고급개념
+    -강력하지만 일반적으로 많이 사용되지는 않는 React 기능을 소개
+    3. API참조
+    -특정 React API를 자세히 알아보고 싶을 때 유용한 문서
+    4. Hook
+    -16.8부터 새로 추가된 Hook에 대한 자세한 설명을 제공
+
+#### 주요개념
+
+###### Hello World
+
+    1. 가장 단순한 React
+    2. ReactDOM.render(<h1>Hello, world!</h1>,document.getElementById('root'));의 코드는 Hello,world! 라는 제목을표시
+
+###### JSX 소개
+
+    1. JSX에 표현식 포함
+    2. 함수의 호출 결과를 JSX에 표현식 포함
+    3. if,for문 등과 함께 사용, 변수에 할당, 인자로 받고, 함수로부터 반환할 수 있음
+    4. 속성에 따옴표를 이용해 문자열 리터럴을 정의할 수 있음
+    5. 속성에 중괄호를 사용하여 JacaScrtipt 표현식을 삽입할 수 있음
+    6. 태그가 비어있다면 XML처럼 /> 를 이용해 바로 닫아주어야 함
+    7. Bable은 JSX를 React.createElement()호출로 컴파일 함
+
+    ex)jsx
+    function getGreeting(user) {
+        if (user) {
+            return <h1>Hello, {formatName(user)}!</h1>;
+        }
+    return <h1>Hello, Stranger.</h1>;
+    }
+
+###### 엘리먼트 렌더링
+
+    1. Element는 React앱의 가장 작은 단위
+    2. React element를 root DOM 노드에 표시하려면 ReactDOM.render()로 전달하면 됨
+    3. ReactDOM은 해당 엘리먼트와 그 자식 엘리먼트를 이전의 엘리먼트와 비교하고 DOM을 원하는 상태로 만드는데 필요한 경우에만  DOM을 업데이트함
+
+###### Component와 Props
+
+    1. 개념적으로 컴포넌트는 JavaScript 함수와 유사함
+    2. React에는 함수 컴포넌트와 클래스 컴포넌트가 있음
+    3. 컴포넌트의 이름은 항상 대문자로 시작함
+    4. 문서'컴포넌트 렌더링'예제의 실행 과정
+    5. props 라고 하는 임의의 입력을 받은 후, 화면에 어떻게 표시되는지를 기술하는 React 엘리먼트를 반환
+
+    ex) 함수 클래스 컴포넌트
+        function Welcome(props) {
+            return <h1>Hello, {props.name}</h1>;
+        }
+        class Welcome extends React.Component {
+            render() {
+             return <h1>Hello, {this.props.name}</h1>;
+            }
+        }
+
 ## [11월 17일]
 
 #### 영화 앱 깃허브에 배포
