@@ -2,6 +2,115 @@
 
 # 강태훈 201840104
 
+## [12월 01일]
+
+#### 주요개념
+
+###### State and Lifecyle
+
+    1. Clock 컴포넌트를 완전히 재사용하고 캡슐화하는 방법
+    2. 첫 번째 예제와 두 번째 예제는 컴포넌트의 분리만 있을 뿐 차이가 없음
+    3. 중요한 것은 clock이 스스로 업데이트하도록 만들기 위해서는 clock에 state가 있어야 함
+    4.State는 props와 유사하지만, 비공개이며 컴포넌트에 의해 완전히 제어
+    5. 함수에서 클래스로 변환
+    - React.Component를 확장하는 동일한 이름의 ES6 class를 생성
+    - render() 라고 불리는 빈 메서드를 추가
+    - 함수의 내용을 redner()메서드 안으로 옮김
+    - render() 내용 안에 있는 props를 this.props로 변경
+    - 남아있는 빈 함수 선언을 삭제
+
+    6. 클래스에 로컬 state 추가
+    ex)
+    1. render() 메서드 안에 있는 this.props.date를 this.state.date로 변경
+         class Clock extends React.Component {
+            render() {
+                return (
+                <div>
+                    <h1>Hello, world!</h1>
+                    <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+                </div>
+                );
+            }
+        }
+
+    2. 초기 this.state를 지정하는 class constructor를 추가(props를 기본 constructor에 전달하는지 유의)
+         class Clock extends React.Component {
+            constructor(props) {
+                super(props);
+                this.state = {date: new Date()};
+            }
+            render() {
+                return (
+                <div>
+                    <h1>Hello, world!</h1>
+                    <h2>It is {this.state.date.toLocaleTimeString()}.</h2>
+                </div>
+                );
+            }
+        }
+
+    3. <Clock/> 요소에서 date prop을 삭제
+    ReactDOM.render(
+        <Clock />,
+    document.getElementById('root')
+    );
+
+    *결과
+    tick()메서드가 들어가지 않아 현재시간만 표시되고 시간에 따른 변화가 없음
+
+    7. 생명주기 메서드를 클래스에 추가
+    - Clock이 처음 DOM에 렌더링 될 때마다 타이머를 설정하려고 하는 것을 React에서 '마운팅'이라 함
+    - Clock에 의해 생섣된 DOM이 삭제될 때마다 타이머를 해제하려고 하는 것을 React에서 '언마운팅'이라 함
+    - componentDidMount() 메서드
+        componentDidMount() {
+            this.timerID = setInterval(
+                () => this.tick(),
+                1000
+            );
+        }
+    - componentWillunmount() 메서드
+        componentWillUnmount() {
+            clearInterval(this.timerID);
+        }
+
+    - Clok 컴포넌트가 매초 작동할 수 있도록 tick()메서드를 구현하여 위 예제에 적용
+
+    8. State 올바르게 사용법
+    - 직접 State를 수정하지 않음
+    - State 업데이트는 비동기적일 수도 있음
+    - State 업데이트는 병합됨
+    9. 데이터는 아래로 흐름
+    - 부모 컴포넌트나 자식 컴포넌트 모두 특정 컴포넌트가 stateful인지 또는 stateless 인지 알 수 없어 state는 종종 로컬 또는 캡슐화 라고 함
+    - 컴포넌트는 자신의 state를 자식 컴포넌트에 props로 전달 가능
+    - 일반적으로 이것을 하향식 또는 단방향식 데이터 흐름 이라 함
+    - React 앱에서 컴포넌트가 stateful 또는 stateless에 대한 것은 시간이 지남에 따라 변경될 수 있는 구현 세부 사항으로 간주
+    - stateful 컴포넌트 안에서 stateless 컴포넌트를 사용할 수 있으며, 그 반대 경우도 마찬가지로 사용 가능
+
+###### 이벤트 처리하기
+
+    1. React 엘리먼트에서 이벤트를 처리하는 방식은 DOM 엘리먼트에서 이벤트를 처리하느 방식과 매우 유사함
+    - React의 이벤트는 소문자 대신 캐멀 케이스(camelCase)를 사용
+    - JSX를 사용하여 문자열이 아닌 함수로 이벤트 핸들러를 전달
+    ex) HTML
+    <button onclick="activateLasers()">
+        Activate Lasers
+    </button>
+
+    ex) react
+    <button onClick={activateLasers}>
+        Activate Lasers
+    </button>
+    2. 이벤트 핸들러에 인자 전달
+    - 루프 내부에서는 이벤트 핸들러에 추가적인 매개변수를 전달하는 것이 일반적
+
+    ex) id가 행의 ID일 경우 실행되는 예제
+    <button onClick={(e) => this.deleteRow(id, e)}>Delete Row</button>
+    <button onClick={this.deleteRow.bind(this, id)}>Delete Row</button>
+
+    - 위 두 줄은 동등하며 각각 화살표 함수와 Function.prototype.bind를 사용
+    - 두 경우 모두 React 이벤트를 나타내는 e 인자가 ID 뒤에 두 번째 인자로 전달됩
+    - 화살표 함수를 사용하면 명시적으로 인자를 전달해야 하지만 bind를 사용할 경우 추가 인자가 자동으로 전달
+
 ## [11월 24일]
 
 #### create-react-app으로 [ Remarkable ] 사용하기
