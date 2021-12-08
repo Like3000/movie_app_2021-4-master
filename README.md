@@ -2,6 +2,281 @@
 
 # 강태훈 201840104
 
+## [12월 8일]
+
+#### 조건부 렌더링
+
+    React에서 조건부 렌더링은 JavaScript에서의 조건 처리와 같이 동작함.
+
+###### 엘리멘트 변수
+
+    엘리먼트를 저장하기 위해 변수를 사용할 수 있다.
+    출력의 다른 부분은 변하지 않은 채로 컴포넌트의 일부를 조건부로 렌더링 할 수 있다.
+    ex) 로그인 / 로그아웃 버튼
+    function LoginButton(props) {
+        return (
+            <button onClick={props.onClick}>
+            Login
+            </button>
+        );
+    }
+
+    function LogoutButton(props) {
+        return (
+            <button onClick={props.onClick}>
+            Logout
+            </button>
+        );
+    }
+
+###### 논리 && 연산자로 If를 인라인으로 표현
+
+    1. JSX 안에는 중괄호를 이용해서 표현식을 포함 할 수 있다.
+    2. JavaScript의 논리 연산자 &&를 사용하면 쉽게 엘리먼트를 조건부로 넣을 수 있다.
+    3. JavaScript에서 true && expression은 항상 expression으로 평가되고 false && expression은 항상 false로 평가됨.
+    4. && 뒤의 엘리먼트는 조건이 true일때 출력이 됨
+    5. 조건이 false라면 React는 무시하고 건너뜀
+    6. falsy 표현식을 반환하면 여전히 && 뒤에 있는 표현식은 건너뛰지만 falsy 표현식이 반환됨
+    ex) <div>0</div>이 render 메서드에서 반환됨.
+    render() {
+        const count = 0;
+        return (
+            <div>
+            { count && <h1>Messages: {count}</h1>}
+            </div>
+        );
+    }
+
+###### 조건부 연산자로 If-Else구문 인라인으로 표현하기
+
+    엘리먼트를 조건부로 렌더링하는 다른 방법은 조건부 연산자인 condition ? true: false를 사용
+    가독성이 다소 떨어지지만 큰 표션식을 넣을 수도 있음
+
+###### 컴포넌트가 렌더링하는 것을 막기
+
+    가끔 다른 컴포넌트에 의해 렌더링될 때 컴포넌트 자체를 숨기고 싶을 때 렌더링 결과를 출력하는 대신 null을 반환하면 해결
+
+#### 리스트와 Key
+
+    열의 값을 반환할 때는 map()함수를 사용 / 변환하여 반환하는 것도 가능
+    ex)
+     const number =[1,2,3,4,5];
+    const doubled = numbers.map((number) => number *2 );
+    console.log(doubled);
+
+###### 여러개의 컴포넌트 렌더링 하기
+
+    엘리먼트 모음을 만들고 중괄호 {}를 이용하여 JSX에 포함 가능
+    JavaScript map() 함수를 사용하여 numbers 배열을 반복 실행
+    각 항목에 대해 <li> 엘리먼트를 반환하고 엘리먼트 배열의 결과를 listItems에 저장
+
+###### 기본 리스트 컴포넌트
+
+    일반적으로 컴포넌트 안에서 리스트를 렌더링
+    아래 예시를 numbers 배열을 받아서 순서 없는 엘리먼트 리스트를 출력하는 컴포넌트로 리팩토링
+    ex)
+    function NumberList(props) {
+        const numbers = props.numbers;
+        const listItems = numbers.map((number) =>
+            <li>{number}</li>
+        );
+        return (
+            <ul>{listItems}</ul>
+        );
+    }
+
+    const numbers = [1, 2, 3, 4, 5];
+    ReactDOM.render(
+        <NumberList numbers={numbers} />,
+        document.getElementById('root')
+    );
+
+    위의 코드를 실행하면 리스트의 각 항목에 key를 넣어야 한다는 경고가 표시
+    key는 엘리먼트 리스트를 만들 때 포함해야 하는 특수한 문자열 어트리뷰트
+
+###### key
+
+    Key는 React가 어떤 항목을 변경, 추가 또는 삭제할지 식별하는 것을 도움
+    key는 엘리먼트에 안정적인 고유성을 부여하기 위해 배열 내부의 엘리먼트에 지정
+    Key를 선택하는 가장 좋은 방법은 리스트의 다른 항목들 사이에서 해당 항목을 고유하게 식별할 수 있는 문자열을 사용(대부분의 경우 데이터의 ID를 key로 사용)
+    렌더링 한 항목에 대한 안정적인 ID가 없다면 최후의 수단으로 항목의 인덱스를 key로 사용
+
+###### Key로 컴포넌트 추출하기
+
+    ListItem 안에 있는 li 엘리먼트가 아니라 분해하는 곳의 ListItem엘리먼트가 key를 가져야 함
+
+###### Key는 형제 사이에서만 고유한 값이어야 한다.
+
+    두 개의 다른 배열을 만들 때 동일한 key를 사용 가능
+    ex)
+    function Blog(props) {
+        const sidebar = (
+            <ul>
+            {props.posts.map((post) =>
+                <li key={post.id}>
+                {post.title}
+                </li>
+            )}
+            </ul>
+        );
+        const content = props.posts.map((post) =>
+            <div key={post.id}>
+            <h3>{post.title}</h3>
+            <p>{post.content}</p>
+            </div>
+        );
+        return (
+            <div>
+            {sidebar}
+            <hr />
+            {content}
+            </div>
+        );
+    }
+
+    const posts = [
+        {id: 1, title: 'Hello World', content: 'Welcome to learning React!'},
+        {id: 2, title: 'Installation', content: 'You can install React from npm.'}
+    ];
+    ReactDOM.render(
+        <Blog posts={posts} />,
+        document.getElementById('root')
+    );
+
+###### JSX에 map() 포함시키기
+
+    JSX를 사용하면 중괄호 안에 모든 표현식을 포함 시킬 수 있으므로 map() 함수의 결과를 인라인으로 처리 가능
+
+#### 폼
+
+    폼은 사용자가 폼을 제출하면 새로운 페이지로 이동하는 기본 HTML 폼 동작을 수행
+    React에서 동일한 동작을 원한다면 그대로 사용
+    JavaScript 함수로 폼의 제출을 처리하고 사용자가 폼에 입력한 데이터에 접근하도록 하는 것이 편리
+    이를 위한 표준 방식은 “제어 컴포넌트 (controlled components)“라고 불리는 기술을 이용
+
+###### 제어 컴포넌트 (Controlled Component)
+
+    HTML에서 <input>, <textarea>, <select>와 같은 폼 엘리먼트는 일반적으로 사용자의 입력을 기반으로 자신의 state를 관리하고 업데이트 함
+    React에서는 변경할 수 있는 state가 일반적으로 컴포넌트의 state 속성에 유지되며 setState()에 의해 업데이트 됨
+    React state를 “신뢰 가능한 단일 출처 (single source of truth)“로 만들어 두 요소를 결합할 수 있음
+    폼을 렌더링하는 React 컴포넌트는 폼에 발생하는 사용자 입력값을 제어
+    React에 의해 값이 제어되는 입력 폼 엘리먼트를 제어 컴포넌트 라고 함
+
+###### textarea 태그
+
+    HTML에서 <textarea> 엘리먼트는 텍스트를 자식으로 정의
+    ex)
+    <textarea>
+    Hello there, this is some text in a text area
+    </textarea>
+
+    React에서 <textarea>는 value 어트리뷰트를 대신 사용
+    <textarea>를 사용하는 폼은 한 줄 입력을 사용하는 폼과 비슷하게 작성 가능
+
+###### select 태그
+
+    HTML에서 <select>는 드롭 다운 목록 생성
+    selected 옵션이 있으므로 Coconut 옵션이 초기값이 되는 점을 주의
+    React에서는 selected 어트리뷰트를 사용하는 대신 최상단 select태그에 value 어트리뷰트를 사용
+    한 곳에서 업데이트만 하면되기 때문에 제어 컴포넌트에서 사용하기 더 편함
+
+    주의)
+    select 태그에 multiple 옵션을 허용한다면 value 어트리뷰트에 배열을 전달 가능
+    ex)
+    <select multiple={true} value={['B', 'C']}>
+
+###### file input 태그
+
+    HTML에서 <input type="file">는 사용자가 하나 이상의 파일을 자신의 장치 저장소에서 서버로 업로드하거나 File API를 통해 JavaScript로 조작 가능
+    <input type="file" />
+    값이 읽기 전용이기 때문에 React에서는 비제어 컴포넌트
+
+###### 다중 입력 제어하기
+
+    여러 input 엘리먼트를 제어해야할 때, 각 엘리먼트에 name 어트리뷰트를 추가하고 event.target.name 값을 통해 핸들러가 어떤 작업을 할 지 선택 가능
+    setState()는 자동적으로 현재 state에 일부 state를 병합하기 때문에 바뀐 부분에 대해서만 호출하면 됨
+
+###### 제어되는 Input Null 값
+
+    제어 컴포넌트에 value prop을 지정하면 의도하지 않는 한 사용자가 변경할 수 없음
+    value를 설정했는데 여전히 수정할 수 있다면 실수로 value를 undefined나 null로 설정 가능
+
+#### 합성 (Composition) vs 상속 (Inheritance)
+
+    React는 강력한 합성 모델을 갖고 있으며 상속 대신 합성을 사용하여 컴포넌트 간에 코드를 재사용하는 것이 좋다.
+
+###### 컴포넌트에서 다른 컴포넌트를 담기
+
+    어떤 컴포넌트들은 어떤 자식 엘리먼트가 들어올 지 미리 예상할 수 없는 경우가 있다.
+    범용적인 ‘박스’ 역할을 하는 Sidebar 혹은 Dialog와 같은 컴포넌트에서 특히 자주 볼 수 있다.
+    이러한 컴포넌트에서는 특수한 children prop을 사용하여 자식 엘리먼트를 출력에 그대로 전달하는 것이 좋다.
+    ex)
+    function FancyBorder(props) {
+        return (
+            <div className={'FancyBorder FancyBorder-' + props.color}>
+            {props.children}
+            </div>
+        );
+    }
+
+###### 특수화
+
+    때로는 어떤 컴포넌트의 “특수한 경우”인 컴포넌트를 고려해야 하는 경우가 있다.
+    WelcomeDialog는 Dialog의 특수한 경우
+
+#### React로 사고하기
+
+    React는 JavaScript로 규모가 크고 빠른 웹 애플리케이션을 만드는 가장 좋은 방법
+    React의 가장 멋진 점 중 하나는 앱을 설계하는 방식
+    React는 Facebook과 Instagram을 통해 확장성을 입증
+
+###### 1단계 : UI를 컴포넌트 계층 구조로 나누기
+
+    1. 하위 컴포넌트를 포함한 모든 컴포넌트의 주변에 박스를 그리고 그 각각에 이름붙이기
+    2. 새로운 함수나 객체를 만들 때처럼 생성
+    3. 한 가지 테크닉은 단일 책임 원칙
+
+###### 2단계 : React로 정적인 버전 만들기
+
+    1. 가장 쉬운 방법은 데이터 모델을 가지고 UI를 렌더링은 되지만 아무 동작도 없느 버전을 만들어보는 것이다.
+    2. 과정을 나누는 것이 좋은데, 정적 버전을 만드는 것은 생각은 적게 필요하지만 타이핑은 많이 필요로 하고, 상호작용을 만드는 것은 생각은 많이 해야 하지만 티이핑은 적게 필요로 하기 때문
+    3. 데이터 모델을 렌더링하는 앱의 정적 버전을 만들기 위해 다른컴포넌트를 재사용하는 컴포넌트를 만들고 props를 히용해 데이터를 전달
+    4. props는 부모가 자식에게 데이터를 넘겨줄 때 사용할 수 있는 방법
+    5. state는 오직 상호작용을 위해, 즉 시간이 지남에 따라 데이터가 바뀌는 것에 사용
+
+###### 3단계 : UI state에 대한 최소한의 표현 찾아내기
+
+    1. UI를 상호작용하게 만들려면 기반 데이터 모델을 변경할 수 있는 방법 필요
+    2. React에서는 이를 state를 통해 변경
+
+###### 4단계 : State 가 어디에 있어야 할 지 찾기
+
+    1. 최소한으로 필요한 State가 뭔지 찾아야 함
+    2. 어떤 컴포넌트가 state를 변경하거나 소유할지 찾아야 함
+    3. 애플리케이션이 가지는 각각의 state
+    - state를 기반으로 렌더링하는 모든 컴포넌트
+    - 공통 소유 컴포넌트
+    - 공통 혹은 더 상위에 있는 컴포넌트가 state
+    - state를 소유할 적절한 컴포넌트를 찾지 못했다면, state를 소유하는 컴포넌트를 하나 만들어서 공통 오너 컴포넌트의 상위 계층에 추가
+
+###### 5단계 : 역방향 데이터 흐름 추가
+
+    1. 지금까지 계층 구조 아래로 흐르는 props와 state로 앱 구현
+    2. 다른 방향의 데이터 흐름을 만들어볼 차례
+    3. 계층 구조의 하단에 있는 폼 컴포넌트에서 FilterableProductTable의 state를 업데이트할 수 있어야 함
+    4. React는 전통적인 양방향 데이터바인딩과 비교하면, 더 많은 타이핑을 필요로 하지만 데이터 흐름을 명시적으로 보이게 만들어서 프로그램이 어떻게 동작하는지 파악할 수 있게 도와 줌
+
+#### Hook
+
+    Hook은 React 버전 16.8부터 React 요소로 새로 추가
+    기존의 Class로 코들르 작성할 필요 없이 Hook을 이용하여 State와 여러가지 React의 기능을 사요할 수 있음
+
+###### Hook의 특징
+
+    선택적 사용 기존의 코드를 다시 작성할 필요 없이 일부의 컴포넌트들 안에서 Hook을 사용 가능
+    100% 이전버전과의 호환성 Hook은 호환성을 깨뜨리는 변화 없음
+    현재 사용 가능 Hook은 배포 v16.8.0 에서 사용 가능
+
 ## [12월 01일]
 
 ### 주요개념
